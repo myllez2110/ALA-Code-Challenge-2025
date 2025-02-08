@@ -1,0 +1,25 @@
+using System;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace API.Core
+{
+    public static class Security
+    {
+        private static string pepper = "AlfaLavalSecurityPepper2025!";
+
+        public static string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password + pepper));
+                return Convert.ToBase64String(hashedBytes);
+            }
+        }
+
+        public static bool VerifyPassword(string password, string hash)
+        {
+            return HashPassword(password) == hash;
+        }
+    }
+}

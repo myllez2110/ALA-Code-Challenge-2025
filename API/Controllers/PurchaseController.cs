@@ -1,35 +1,21 @@
-﻿using API.Models;
+using API.Models;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
-    public class UserController : BaseController<UserInsert, UserUpdate>
+    public class PurchaseController : BaseController<PurchaseInsert, PurchaseUpdate>
     {
-        private readonly UserService _service;
+        private readonly PurchaseService _service;
 
-        public UserController(TokenService tokenService)
+        public PurchaseController()
         {
-            _service = new UserService(tokenService);
+            _service = new PurchaseService();
         }
 
-        [AllowAnonymous]
-        [HttpPost]
-        public IActionResult Validate(UserLogin obj)
-        {
-            try
-            {
-                return Ok(_service.ValidateUser(obj));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "admin")]
-        public override IActionResult Create(UserInsert obj)
+        public override IActionResult Create(PurchaseInsert obj)
         {
             try
             {
@@ -47,8 +33,8 @@ namespace API.Controllers
         {
             try
             {
-                var users = _service.GetAll();
-                return users.Count == 0 ? NotFound() : Ok(users);
+                var purchases = _service.GetAll();
+                return purchases.Count == 0 ? NotFound() : Ok(purchases);
             }
             catch (Exception ex)
             {
@@ -56,14 +42,27 @@ namespace API.Controllers
             }
         }
 
-        [Authorize(Roles = "admin")]
         public override IActionResult Read(long id)
         {
             try
             {
                 if (id <= 0) return BadRequest();
-                var user = _service.GetById(id);
-                return user.id == -1 ? NotFound() : Ok(user);
+                var purchase = _service.GetById(id);
+                return purchase.id == -1 ? NotFound() : Ok(purchase);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("user/{userId}")]
+        public IActionResult GetUserPurchases(long userId)
+        {
+            try
+            {
+                var purchases = _service.GetUserPurchases(userId);
+                return purchases.Count == 0 ? NotFound() : Ok(purchases);
             }
             catch (Exception ex)
             {
@@ -72,7 +71,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "admin")]
-        public override IActionResult UpdateById(UserUpdate obj)
+        public override IActionResult UpdateById(PurchaseUpdate obj)
         {
             try
             {
