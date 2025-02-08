@@ -607,4 +607,7 @@ sketch
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
+#jetbrains ide
+.idea
+
 # End of https://www.toptal.com/developers/gitignore/api/react,csharp,visualstudio,visualstudi
