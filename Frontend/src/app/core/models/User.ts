@@ -18,10 +18,14 @@ export class UserLoginResponse {
 export class UserInsert {
   email: string = "";
   name: string = "";
+  password: string = "";
+  role: string = "";
 }
 
 export class UserUpdate {
   id: number = -1;
   email: string = "";
   name: string = "";
+  password: string = "";
+  role: string = "";
 }
